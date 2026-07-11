@@ -144,7 +144,12 @@ local function create_smart_router(prefix, entity, is_fast_replace, is_migration
     -- end
 
     local stack_size = 1+(entity.quality.level or 0)
-    if not settings.startup["router-use-quality"].value then stack_size = 255 end
+
+    if not script.feature_flags.space_travel then
+        stack_size = 1
+    elseif not settings.startup["router-use-quality"].value then
+        stack_size = 255
+    end
 
     local function mkbelt(ipt)
         local name = "router-component-" .. prefix .. "transport-belt"
@@ -178,7 +183,7 @@ local function create_smart_router(prefix, entity, is_fast_replace, is_migration
             force = entity.force,
             fast_replace = is_fast_replace
         }
-        if dir == "output" then
+        if dir == "output" and script.feature_flags.space_travel then
             xb.loader_belt_stack_size_override = stack_size
         end
         if xb then
@@ -310,7 +315,11 @@ local function create_smart_router_io(prefix, entity, is_fast_replace, n_lanes)
     local my_orientation = entity.orientation*16
     local opposite_orientation = (8+entity.orientation*16)%16
     local stack_size = 1+(entity.quality.level or 0)
-    if not settings.startup["router-use-quality"].value then stack_size = 255 end
+    if not script.feature_flags.space_travel then
+        stack_size = 1
+    elseif not settings.startup["router-use-quality"].value then
+        stack_size = 255
+    end
 
     local input_inserters = {}
     local n_inserters = 4
@@ -324,7 +333,9 @@ local function create_smart_router_io(prefix, entity, is_fast_replace, n_lanes)
             force = entity.force,
             fast_replace = is_fast_replace
         }
-        output_loaders[i].loader_belt_stack_size_override = stack_size
+        if script.feature_flags.space_travel then
+            output_loaders[i].loader_belt_stack_size_override = stack_size
+        end
         if output_loaders[i] then
             output_loaders[i].rotatable = false
         end

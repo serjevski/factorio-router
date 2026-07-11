@@ -383,7 +383,7 @@ local function create_smart_comms(builder,prefix,chest,input_belts,input_loaders
     jam_alert = builder:create_or_find_entity{ name="router-component-jam-panel" }
     jam_alert.get_wire_connector(CGREEN,true).connect_to(jam_counter_2.get_wire_connector(OGREEN,true))
     jam_behavior = jam_alert.get_or_create_control_behavior()
-    jam_behavior.set_message(1,{
+    jam_behavior.add_record({
         text="",
         icon={type="virtual",name="signal-alert"},
         condition={first_signal = SIGC, comparator=">=", constant=30}
